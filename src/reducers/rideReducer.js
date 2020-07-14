@@ -21,13 +21,13 @@ switch (action.type) {
     }
 }
 
-function rideDetailsReducer(state = { loading: true, ride: [] }, action) {
+function rideDetailsReducer(state = { loading: true, ride: {}, wagons: [] }, action) {
 
     switch (action.type) {
         case RIDE_DETAILS_REQUEST:
-            return { loading: true, ride: [] };
+            return { loading: true, ride: {}, wagons: [] };
         case RIDE_DETAILS_SUCCESS: 
-            return { loading: false, ride: action.payload };
+            return { loading: false, ride: action.payload.ride, wagons: action.payload.wagons };
         case RIDE_DETAILS_FAIL:
             return { loading: false, error: action.payload }
         default:

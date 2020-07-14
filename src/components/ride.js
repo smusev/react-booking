@@ -1,21 +1,100 @@
-import React, {useState} from 'react';
-import ImageMapper from 'react-image-mapper';
+import React, {useState, useEffect} from 'react';
+import ImageMapper from '../util/ImageMapper';
 import carScheme from '../carScheme.png'; 
+import { useDispatch, useSelector } from 'react-redux';
+import { bookTickets } from '../actions/ticketActions';
 
-function Ride() {
-  const [state, setState] = useState(0);
+function Ride({ride, wagons}) {
+  const NOT_AVAILABLE = "rgba(255, 0, 0, 0.5)", IS_ORDERED = "rgba(0,255, 0, 0.5)";
+  const [ myRide, setMyRide ] = useState(ride);
+  const [ state, setState ] = useState(0);
+  const [ currentWagon, setCurrentWagon ] = useState(ride.carts[0]);
+  const [ cartMap, setCartMap ] = useState({ name: "my-map", areas: []});
+  const [ slotOrders, setSlotOrders] = useState([]);
+
+  const dispatch = useDispatch();
+
+  const handleBooking = () => {
+    console.log("handle booking");
+    dispatch(bookTickets(slotOrders));
+  }
+
+  useEffect(() => {
+    const wagon = currentWagon && wagons.find(wagon => wagon.name == currentWagon.carType );
+    let areas = [];
+    myRide.slots.forEach(seat => {
+      if (seat.cartNumber == currentWagon.number){
+        const slot = wagon.slots.find(slot => slot.name === seat.seatNumber );
+        areas.push({ 
+          disabled: seat.available ? false : true, 
+          name: seat.seatNumber,
+          shape: "rect", 
+          coords: slot.coords, 
+          preFillColor: seat.available ? "" : NOT_AVAILABLE, 
+          fillColor: "rgba(0, 0, 255, 0.3)", 
+          available: seat.available, 
+          price: seat.price
+        })
+      }
+    });
+    setCartMap({...cartMap, areas});
+    return () => {};
+  }, [currentWagon, myRide]);
+
+  useEffect(() => {
+    return () => {};
+  }, [cartMap]);
+
+  const orderList = slotOrders.map(slot => {
+    return <div>
+      <div className="">
+        <p>Вагон {slot.wagon} Місце {slot.seatNumber}</p>
+      </div>
+      <div className="">
+        <button onClick={() => removeFromOrderList(slot.wagon, slot.seatNumber)} className="button-remove">X</button>
+      </div>
+    </div>
+  })
+
+  const removeFromOrderList = (wagon, seatNumber) => {
+    setSlotOrders(slotOrders.filter(slot => (slot.seatNumber !== seatNumber) || ( slot.wagon !== wagon )))
+  }
+
+  const changeNotAvailalble = (wagon, seat) => {
+    let slots = myRide.slots;
+    let i = slots.findIndex(slot => (slot.seatNumber == seat) && ( slot.cartNumber == wagon ))
+    slots[i] = ({...slots[i], available: false})
+    setMyRide ({...myRide, slots: slots});
+  } 
+
+  const handleSlot = (area) => {
+    let newSlotOrders = slotOrders.filter(slot => (slot.seatNumber !== area.name) || ( slot.wagon !== currentWagon.number ));
+    setSlotOrders([...newSlotOrders, {wagon:currentWagon.number, seatNumber:area.name, price:area.price}]);
+    console.log(area);
+    changeNotAvailalble(currentWagon.number, area.name);
+  }
+
+  const handleCart = (cart) => {
+    setCurrentWagon(cart);
+  }
+
+  const wagonTabs = myRide.carts.map(cart => {
+    return <div className="cart-tabs" onClick={() => handleCart(cart)}>
+      <p> Вагон номер {cart.number}</p>
+      <p> {cart.carType} </p>
+    </div>
+  })
 
   const load = () => {
-		setState({ ...state, msg: "Interact with image !" });
+    setState({ ...state, msg: "Interact with image !" });
   };
   
 	const clicked = (area) => {
+    handleSlot(area);
 		setState({
       ...state,
-			msg: `You clicked on ${area.name} at coords ${JSON.stringify(
-				area.coords
-      )} !`
-		});
+			msg: `Місце номер ${area.name} коштує ${area.price} ${area.available? "доступне" : "недоступне"}`
+    });
 	};
 
   const moveOnArea = (area, evt) => {
@@ -27,7 +106,6 @@ function Ride() {
 			} at coords ${JSON.stringify(coords)} !`
 		});
 	};
-
 
   const enterArea = (area) => {
       setState({ ...state, hoveredArea: area });
@@ -57,111 +135,15 @@ function Ride() {
 		});
 	};
 
-  const URL1 = "https://cdn.seatguru.com/en_US/img/20200702143825/seatguru/airlines_new/Asiana/Asiana_Airbus_A320-200.jpg"
-  const MAP1 = {
-    name: "my-map",
-    areas: [
-      { name: "1",  shape: "rect", coords: [31,520,71,538], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "2",  shape: "rect", coords: [79,520,119,538], preFillColor: "rgba(103, 128, 159, 0.3)", fillColor: "rgba(103, 128, 159, 0" },
-      { name: "3",  shape: "rect", coords: [31,494,71,514], preFillColor: "rgba(103, 128, 159, 0.3)", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "4",  shape: "rect", coords: [79,494,119,514], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "5",  shape: "rect", coords: [31,465,71,485], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "6",  shape: "rect", coords: [79,465,119,485], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "7",  shape: "rect", coords: [31,440,71,460], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "8",  shape: "rect", coords: [79,440,119,460], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "9",  shape: "rect", coords: [31,411,71,431], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "10",  shape: "rect", coords: [79,411,119,431], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "11",  shape: "rect", coords: [31,386,71,406], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "12",  shape: "rect", coords: [79,386,119,406], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "13",  shape: "rect", coords: [31,356,71,376], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "14",  shape: "rect", coords: [79,356,119,376], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "15",  shape: "rect", coords: [31,332,71,352], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "16",  shape: "rect", coords: [79,332,119,352], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "17",  shape: "rect", coords: [31,302,71,322], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "18",  shape: "rect", coords: [79,302,119,322], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "19",  shape: "rect", coords: [31,278,71,298], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "20",  shape: "rect", coords: [79,278,119,298], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "21",  shape: "rect", coords: [31,249,71,269], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "22",  shape: "rect", coords: [79,249,119,269], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "23",  shape: "rect", coords: [31,224,71,244], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "24",  shape: "rect", coords: [79,224,119,244], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "25",  shape: "rect", coords: [31,195,71,215], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "26",  shape: "rect", coords: [79,195,119,215], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "27",  shape: "rect", coords: [31,170,71,190], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "28",  shape: "rect", coords: [79,170,119,190], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "29",  shape: "rect", coords: [31,141,71,161], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "30",  shape: "rect", coords: [79,141,119,161], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "31",  shape: "rect", coords: [31,116,71,136], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "32",  shape: "rect", coords: [79,116,119,136], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "33",  shape: "rect", coords: [31,87,71,107], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "34",  shape: "rect", coords: [79,87,119,107], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "35",  shape: "rect", coords: [31,62,71,82], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-      { name: "36",  shape: "rect", coords: [79,62,119,82], preFillColor: "", fillColor: "rgba(0, 0, 255, 0.3)"  },
-            
-    ]
-  }
-
-
-  const URL = "https://c1.staticflickr.com/5/4052/4503898393_303cfbc9fd_b.jpg"
-  const MAP = {
-    name: "my-map",
-    areas: [
-      { name: "1", shape: "poly", coords: [25,33,27,300,128,240,128,94], preFillColor: "green", fillColor: "blue"  },
-      { name: "2", shape: "poly", coords: [219,118,220,210,283,210,284,119], preFillColor: "pink"  },
-      { name: "3", shape: "poly", coords: [381,241,383,94,462,53,457,282], fillColor: "yellow"  },
-      { name: "4", shape: "poly", coords: [245,285,290,285,274,239,249,238], preFillColor: "red"  },
-      { name: "5", shape: "circle", coords: [170, 100, 25 ] },
-    ]
-  }
-
   return (
     <div className="Main">
-      <header className="App-header">
-        <p> Ride Component </p>
-        {/*
-        <img class="plane" src="https://cdn.seatguru.com/en_US/img/20200702143825/seatguru/airlines_new/Asiana/Asiana_Airbus_A320-200.jpg" usemap="#seatmap"></img>
-        <div>
-           <map id="seatmap" name="seatmap">
-             <area shape="rect" coords="134,343,170,390" href="sun.htm" alt=""/> 
-             <area shape="rect" coords="166,343,195,390" href="sun.htm" alt=""/> 
-             <area shape="rect" coords="227,343,263,390" alt="11"/> 
-             <area shape="rect" coords="259,343,288,390" alt="12"/> 
-             <area shape="rect" coords="0,0,82,126" href="sun.htm" alt="Sun" title = "Sun"/>
-             <area shape="rect" coords="82,0,100,126" href="mercur.htm" alt="Mercury" title = "Mercury"/>
-          </map>
-        </div>
-        */}
-      </header>    
-      {/*
-      <div className="container">
-      <ImageMapper src={URL} map={MAP} width={500}
-        onLoad={() => load()}
-        onClick={area => clicked(area)}
-        onMouseEnter={area => enterArea(area)}
-        onMouseLeave={area => leaveArea(area)}
-        onMouseMove={(area, _, evt) => moveOnArea(area, evt)}
-        onImageClick={evt => clickedOutside(evt)}
-        onImageMouseMove={evt => moveOnImage(evt)}
-      />
-      {
-        state.hoveredArea &&
-        <span className="tooltip"
-            style={{ ...getTipPosition(state.hoveredArea)}}>
-          { state.hoveredArea && state.hoveredArea.name}
-        </span>
-      }
+      <div className="tabs-wrapper"> 
+        {wagonTabs} 
       </div>
-    */}
-      <div className="container">
-      <ImageMapper src={carScheme} map={MAP1}
-        onLoad={() => load()}
-        onClick={area => clicked(area)}
-        onMouseEnter={area => enterArea(area)}
-        onMouseLeave={area => leaveArea(area)}
-        onMouseMove={(area, _, evt) => moveOnArea(area, evt)}
-        onImageClick={evt => clickedOutside(evt)}
-        onImageMouseMove={evt => moveOnImage(evt)}
-      />
+      <div> 
+        {currentWagon && <span> Вагон номер + {currentWagon.number} </span>}
+      </div>
+      <div> 
       {
         state.hoveredArea &&
         <span className="tooltip"
@@ -170,8 +152,29 @@ function Ride() {
         </span>
       }
       <p>{state.msg}</p>
+      <p>{cartMap.areas[1] && cartMap.areas[1].preFillColor}</p>      </div>
+      <div className="scheme-wrapper">
+      <div className="scheme-container">
+      {cartMap && <ImageMapper src={carScheme} map={cartMap}
+        onLoad={() => load()}
+        onClick={area => clicked(area)}
+        //onMouseEnter={area => enterArea(area)}
+        //onMouseLeave={area => leaveArea(area)}
+        //onMouseMove={(area, _, evt) => moveOnArea(area, evt)}
+        //onImageClick={evt => clickedOutside(evt)}
+        //onImageMouseMove={evt => moveOnImage(evt)}
+      />}
       </div>
-    </div>
+      <div className="order-list-container">
+        {orderList}
+        <span>Загальна вартість: {slotOrders.reduce((value, slot)=> value+slot.price, 0)} грн.</span>
+        <div>
+          <button onClick={handleBooking}>Забронювати</button>
+        </div>
+      </div>
+
+      </div>
+      </div>
   );
 }
 

@@ -278,7 +278,6 @@
     width: 100%;
     padding: 1rem;
     padding-right: 2rem; 
-    background: ;
 }
 
 .connection-time{
@@ -356,4 +355,25 @@
 .category-price {
     margin: 5px;
     background-image: -webkit-linear-gradient(top, #282c34, #282c3f);
+}
+
+.tabs-wrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+}
+
+.cart-tabs{
+    margin: 0.5rem;
+    padding: 0.5rem;
+    font-size: 1rem;
+    line-height: 1rem;
+    border: 1px solid #eee;
+    border-radius: 1rem;
+}
+
+.scheme-wrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }

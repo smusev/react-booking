@@ -27,51 +27,31 @@ function Main() {
   const dispatch = useDispatch();
   const [ message, setMessage] = useState('');
   const [route, hashChange] = useState(window.location.hash.substr(1));
-
-const options = [
-  {name: 'Swedish', value: 'sv'},
-  {name: 'English', value: 'en'},
-  {
-    type: 'group',
-    name: 'Group name',
-    items: [
-      {name: 'Spanish', value: 'es'},
-    ]
-  },
-];
+  
 
 const ridesList = useSelector(state => state.rideList);
 const {rides} = ridesList;
+const {ride, wagons} = useSelector(state => state.rideDetails);
+console.log(ride)
+console.log(wagons)
 
 const today = new Date();
 
 const handleDepartCity  = (city) => {
-	city 
-	?	setRideRequest({...rideRequest,
-			departCity: city.value
-		})
-	: setRideRequest({...rideRequest,
-			departCity: null
-		})
+	city ? setRideRequest({...rideRequest, departCity: city.value})
+       : setRideRequest({...rideRequest, departCity: null	})
 }
 
 const handleArrivalCity  = (city) => {
-	city 
-	?	setRideRequest({...rideRequest,
-			arrivalCity: city.value
-		})
-	: setRideRequest({...rideRequest,
-			arrivalCity: null
-		})
+	city ? setRideRequest({...rideRequest, arrivalCity: city.value})
+    	 : setRideRequest({...rideRequest, arrivalCity: null})
 }
 
 const handleDayClick = (day, { selected }) =>  {
-		let date = day.toLocaleDateString();
-    setRideRequest({...rideRequest, 
-      selectedDay: selected ? undefined : day,
-    });
-    console.log(date);
-  }
+  let date = day.toLocaleDateString();
+  setRideRequest({...rideRequest, selectedDay: selected ? undefined : day });
+  console.log(date);
+}
 
 let history = useHistory();
 
@@ -136,12 +116,11 @@ const handleRideDetails = (id) => {
         	onClick={handleRideSearch}
         >
         Ты кнопка блять
-        { route }
         </button>
 
       <RidesList rides={rides} details={handleRideDetails} />
 
-      <Ride/>
+      {(wagons.length) ? <Ride ride={ride} wagons={wagons} /> : null}
       <RideDetails/>
       <Checkout/>
     </div>

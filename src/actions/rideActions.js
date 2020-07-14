@@ -23,7 +23,10 @@ const rideDetails = (props) => async (dispatch) => {
   try {
     dispatch({ type: RIDE_DETAILS_REQUEST });
     console.log(props);
-    dispatch({ type: RIDE_DETAILS_SUCCESS, payload: {} });
+    let carts = props.carts.map(a => a.carType);
+    let result = carts.filter((v, i, a) => a.indexOf(v) === i);
+    const {data} = await axios.post(apiUrl + "/api/wagons", {wagons:result});
+    dispatch({ type: RIDE_DETAILS_SUCCESS, payload: {ride: props, wagons: data.wagons } });
   } catch (error) {
     dispatch({ type: RIDE_DETAILS_FAIL, payload: error.message });
   }
