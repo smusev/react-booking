@@ -50,7 +50,7 @@ const handleArrivalCity  = (city) => {
 const handleDayClick = (day, { selected }) =>  {
   let date = day.toLocaleDateString();
   setRideRequest({...rideRequest, selectedDay: selected ? undefined : day });
-  console.log(date);
+  console.log(window.innerWidth);
 }
 
 let history = useHistory();
@@ -80,26 +80,29 @@ const handleRideDetails = (id) => {
 
   return (
   	<Fragment>
-    <div className="Main">
-
+    <div className="main">
       <div className="select-wrapper">
-	   	  <Select 
-	   	  	className='select-search' 
-          placeholder="Звідки"
-	   	  	options={cities} 
-      	  onChange={handleDepartCity}
-          isClearable
-	   	  />
-  	 	  <Select  
-  	 	  	className='select-search' 
-          placeholder="Куди"
-  	 	  	options={cities} 
-  	 	  	onChange={handleArrivalCity}
-  	 	  	isClearable
-  	 	  />
+        <div className="select-input">
+          <Select 
+            className='select-search' 
+            placeholder="Звідки"
+            options={cities} 
+            onChange={handleDepartCity}
+            isClearable
+          />
+        </div>
+        <div className="select-input">
+          <Select  
+            className='select-search' 
+            placeholder="Куди"
+            options={cities} 
+            onChange={handleArrivalCity}
+            isClearable
+          />
+        </div>
   	 	</div>
 
-
+      <div className="calendar-wrapper">
 				<DayPicker 
 					className="" 
 					disabledDays={{ before: today }}
@@ -108,8 +111,10 @@ const handleRideDetails = (id) => {
 
 					localeUtils={MomentLocaleUtils} 
 					locale="uk" 
-					numberOfMonths={2}
+					numberOfMonths={window.innerWidth > 600 ? 2 : 1}
 				/>
+      </div>
+      
         <p className='error-message'>{message}</p>
         <button 
         	className="button"

@@ -39,12 +39,23 @@
 
 @import url('https://fonts.googleapis.com/css?family=Nunito+Sans&display=swap');
 
-.select-wrapper {
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: row;
+.main{
+    text-align: center;
 }
 
+.select-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.select-input{
+    margin: auto;
+}
+
+.calendar-wrapper{
+    outline: none;
+}
 
 .button {
   background-color: #4CAF50; /* Green */
@@ -235,7 +246,7 @@
         margin-bottom: 20px;
         font-family: 'Nunito Sans', sans-serif;
         box-sizing: border-box;
-
+        outline: none;
         display: block;
         height: 36px;
         width: 300px;

@@ -57,21 +57,24 @@ function Ride({ride, wagons}) {
   })
 
   const removeFromOrderList = (wagon, seatNumber) => {
-    setSlotOrders(slotOrders.filter(slot => (slot.seatNumber !== seatNumber) || ( slot.wagon !== wagon )))
+    setSlotOrders(slotOrders.filter(slot => (slot.seatNumber !== seatNumber) || ( slot.wagon !== wagon )));
+    changeAvailability(wagon, seatNumber);
   }
 
-  const changeNotAvailalble = (wagon, seat) => {
+  const changeAvailability = (wagon, seat) => {
     let slots = myRide.slots;
     let i = slots.findIndex(slot => (slot.seatNumber == seat) && ( slot.cartNumber == wagon ))
-    slots[i] = ({...slots[i], available: false})
+    slots[i] = ({...slots[i], available: !slots[i].available})
     setMyRide ({...myRide, slots: slots});
   } 
 
   const handleSlot = (area) => {
+    if (!area.disabled) {
     let newSlotOrders = slotOrders.filter(slot => (slot.seatNumber !== area.name) || ( slot.wagon !== currentWagon.number ));
     setSlotOrders([...newSlotOrders, {wagon:currentWagon.number, seatNumber:area.name, price:area.price}]);
     console.log(area);
-    changeNotAvailalble(currentWagon.number, area.name);
+    changeAvailability(currentWagon.number, area.name);
+    }
   }
 
   const handleCart = (cart) => {
