@@ -7,7 +7,7 @@ const availableSlots = ride.slots.reduce((count, slot) => slot.available ? ++cou
 const minPrice = ride.slots.reduce((price, slot) =>  price < slot.price ? price : slot.price );
 
   return (
-    <div className="ride-summary" >
+    <div className="ride-summary" onClick={props.onClick}>
       <div className="ride-info">
 		<div className="connection-time">
 			<p className="departure-time"> {ride.departTime} </p>
@@ -23,9 +23,6 @@ const minPrice = ride.slots.reduce((price, slot) =>  price < slot.price ? price 
         <div>
   			<p> от {minPrice} грн.</p>
 			<p>{availableSlots} мест доступно</p>
-		</div>
-		<div>
-			<button onClick={props.onClick}>Бронювати</button>
 		</div>
       </div>
     </div>

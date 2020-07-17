@@ -7,8 +7,7 @@ import {
 const bookTickets = (props) => async (dispatch) => {
     try {
       dispatch({ type: TICKET_BOOKING_REQUEST });
-      console.log(props);
-      dispatch({ type: TICKET_BOOKING_SUCCESS, payload:[] });
+      dispatch({ type: TICKET_BOOKING_SUCCESS, payload: props });
     } catch (error) {
       dispatch({ type: TICKET_BOOKING_FAIL, payload: error.message });
     }

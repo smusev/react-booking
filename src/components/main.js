@@ -4,12 +4,10 @@ import { cities } from './data/';
 import DayPicker  from 'react-day-picker';
 import MomentLocaleUtils from 'react-day-picker/moment';
 import 'moment/locale/uk';
-//import 'fuse.js'
 import { useHistory } from "react-router-dom";
 import 'react-day-picker/lib/style.css';
 
 import Ride from './ride.js'
-import RideDetails from './rideDetails.js'
 import RidesList from './ridesList.js'
 import Checkout from './checkout.js'
 
@@ -28,12 +26,10 @@ function Main() {
   const [ message, setMessage] = useState('');
   const [route, hashChange] = useState(window.location.hash.substr(1));
   
-
+const {tickets} = useSelector(state => state.bookedTickets)
 const ridesList = useSelector(state => state.rideList);
 const {rides} = ridesList;
 const {ride, wagons} = useSelector(state => state.rideDetails);
-console.log(ride)
-console.log(wagons)
 
 const today = new Date();
 
@@ -50,7 +46,6 @@ const handleArrivalCity  = (city) => {
 const handleDayClick = (day, { selected }) =>  {
   let date = day.toLocaleDateString();
   setRideRequest({...rideRequest, selectedDay: selected ? undefined : day });
-  console.log(window.innerWidth);
 }
 
 let history = useHistory();
@@ -62,15 +57,6 @@ const handleRideSearch = () => {
     dispatch(listRides({depart:rideRequest.departCity,arrival:rideRequest.arrivalCity,date:rideRequest.selectedDay.toISOString()}))
     .then(document.getElementById("rides-list").scrollIntoView())
     .then(setMessage(''));
-
-//    const element = document.getElementById("rides-list")
-    
-/*
-	if (rideRequest.departCity && rideRequest.arrivalCity && rideRequest.selectedDay) {
-    history.push("/?depart="+rideRequest.departCity+"&arrival="+rideRequest.arrivalCity+"&date="+rideRequest.selectedDay.toLocaleDateString());
-    dispatch(listRides({depart:rideRequest.departCity,arrival:rideRequest.arrivalCity,date:rideRequest.selectedDay.toISOString()}));  
-  }
-  */
 }
 
 const handleRideDetails = (id) => {
@@ -126,8 +112,7 @@ const handleRideDetails = (id) => {
       <RidesList rides={rides} details={handleRideDetails} />
 
       {(wagons.length) ? <Ride ride={ride} wagons={wagons} /> : null}
-      <RideDetails/>
-      <Checkout/>
+      {(tickets.length) && (ride.date) ? <Checkout/> : null}
     </div>
     </Fragment>
   );

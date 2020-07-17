@@ -1,3 +1,7 @@
+html, body{
+    overflow-x: hidden;
+}
+
 .App {
   text-align: center;
 }
@@ -41,16 +45,19 @@
 
 .main{
     text-align: center;
+    width: 100%;
+    max-width: 640px;
 }
 
 .select-wrapper {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
+    justify-content: center;
 }
 
 .select-input{
-    margin: auto;
+    
 }
 
 .calendar-wrapper{
@@ -246,7 +253,6 @@
         margin-bottom: 20px;
         font-family: 'Nunito Sans', sans-serif;
         box-sizing: border-box;
-        outline: none;
         display: block;
         height: 36px;
         width: 300px;
@@ -275,7 +281,6 @@
     border-width:  1px;
     border-color: white;
     border-radius: 3px;
-    margin: 10px;
     border-top: 1px solid #eee;
     width: 100%;
     font-size: 1rem;
@@ -368,23 +373,136 @@
     background-image: -webkit-linear-gradient(top, #282c34, #282c3f);
 }
 
+/* Ride */
 .tabs-wrapper{
     display: flex;
     flex-direction: row;
+    overflow-x: scroll;
     justify-content: start;
+    align-items: center;  
+    min-width: 100%;
+    min-height: 200px;
+    margin-bottom: 2rem;
+}
+.tabs-wrapper::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.tabs-wrapper::-webkit-scrollbar:horizontal {
+    height: 11px;
+}
+
+.tabs-wrapper::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white;
+    background-color: rgba(0, 0, 0, .5);
+}
+.tabs-wrapper::-webkit-scrollbar-track { 
+    background-color: #fff; 
+    border-radius: 8px; 
 }
 
 .cart-tabs{
+    display: inline-block;
     margin: 0.5rem;
     padding: 0.5rem;
     font-size: 1rem;
     line-height: 1rem;
     border: 1px solid #eee;
     border-radius: 1rem;
+    min-width: 100px;
+}
+
+.cart-selected{
+    background: #1a3;
 }
 
 .scheme-wrapper{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-evenly;    
+}
+.slot-wrapper{
+    display: flex;
+    justify-content: space-around  ;
+}
+
+.button-remove{
+    margin: 1.2rem;
+    color: #dadada;
+    background:#282c34;
+    font-size: 0.8rem;
+    line-height: 1rem;
+    border: 0px;
+    outline: none;
+}
+
+.total-cost{
+    margin-top: 2rem;
+}
+
+.handle-button{
+    margin-top: 2rem;
+}
+/* Checkout */
+
+.checkout{
+    margin-top: 2rem;
+    margin-bottom: 6rem;
+}
+
+.ticket-wrapper{
+    color: aqua;
+    text-align: left;
+    margin:0.5rem 25%;
+}
+
+.tickets-summary{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin:0.5rem 25%;
+}
+
+.input-form-wrapper{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #eee;
+    border-radius: 1rem;
+    margin: 1rem;
+}
+
+.input-wrapper{
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+
+.input-wrapper-double{
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+}
+
+.input-form{
+    width: 20rem;
+    height: 3rem;
+    text-align: center;
+    position: relative;
+    margin: 10px;
+    margin-bottom: 20px;
+    font-family: 'Nunito Sans', sans-serif;
+    box-sizing: border-box;
+    color: black;
+}
+
+.half-size{
+    width: 9.5rem;
+}
+
+.payment-method-wrapper{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin: 2rem 25%;
 }

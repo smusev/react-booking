@@ -1,29 +1,23 @@
 import React, {useState, useEffect} from 'react';
-import ImageMapper from '../util/ImageMapper';
 import carScheme from '../carScheme.png'; 
-import { useDispatch, useSelector } from 'react-redux';
+import ImageMapper from '../util/ImageMapper';
+import { useDispatch } from 'react-redux';
 import { bookTickets } from '../actions/ticketActions';
 
 function Ride({ride, wagons}) {
-  const NOT_AVAILABLE = "rgba(255, 0, 0, 0.5)", IS_ORDERED = "rgba(0,255, 0, 0.5)";
-  const [ myRide, setMyRide ] = useState(ride);
+  const dispatch = useDispatch();
   const [ state, setState ] = useState(0);
+  const [ myRide, setMyRide ] = useState(ride);
+  const [ slotOrders, setSlotOrders] = useState([]);
   const [ currentWagon, setCurrentWagon ] = useState(ride.carts[0]);
   const [ cartMap, setCartMap ] = useState({ name: "my-map", areas: []});
-  const [ slotOrders, setSlotOrders] = useState([]);
-
-  const dispatch = useDispatch();
-
-  const handleBooking = () => {
-    console.log("handle booking");
-    dispatch(bookTickets(slotOrders));
-  }
+  const NOT_AVAILABLE = "rgba(255, 0, 0, 0.5)";
 
   useEffect(() => {
-    const wagon = currentWagon && wagons.find(wagon => wagon.name == currentWagon.carType );
+    const wagon = currentWagon && wagons.find(wagon => wagon.name === currentWagon.carType );
     let areas = [];
     myRide.slots.forEach(seat => {
-      if (seat.cartNumber == currentWagon.number){
+      if (seat.cartNumber === currentWagon.number){
         const slot = wagon.slots.find(slot => slot.name === seat.seatNumber );
         areas.push({ 
           disabled: seat.available ? false : true, 
@@ -41,14 +35,19 @@ function Ride({ride, wagons}) {
     return () => {};
   }, [currentWagon, myRide]);
 
-  useEffect(() => {
+/*  useEffect(() => {
     return () => {};
   }, [cartMap]);
+*/
 
-  const orderList = slotOrders.map(slot => {
-    return <div>
+  const handleBooking = () => {
+    dispatch(bookTickets(slotOrders));
+  }
+
+  const orderList = slotOrders.map((slot, index) => {
+    return <div className="slot-wrapper" key={index}>
       <div className="">
-        <p>Вагон {slot.wagon} Місце {slot.seatNumber}</p>
+        <p>Вагон&nbsp;{slot.wagon} Місце&nbsp;{slot.seatNumber}</p>
       </div>
       <div className="">
         <button onClick={() => removeFromOrderList(slot.wagon, slot.seatNumber)} className="button-remove">X</button>
@@ -63,7 +62,7 @@ function Ride({ride, wagons}) {
 
   const changeAvailability = (wagon, seat) => {
     let slots = myRide.slots;
-    let i = slots.findIndex(slot => (slot.seatNumber == seat) && ( slot.cartNumber == wagon ))
+    let i = slots.findIndex(slot => (slot.seatNumber === seat) && ( slot.cartNumber === wagon ))
     slots[i] = ({...slots[i], available: !slots[i].available})
     setMyRide ({...myRide, slots: slots});
   } 
@@ -72,7 +71,6 @@ function Ride({ride, wagons}) {
     if (!area.disabled) {
     let newSlotOrders = slotOrders.filter(slot => (slot.seatNumber !== area.name) || ( slot.wagon !== currentWagon.number ));
     setSlotOrders([...newSlotOrders, {wagon:currentWagon.number, seatNumber:area.name, price:area.price}]);
-    console.log(area);
     changeAvailability(currentWagon.number, area.name);
     }
   }
@@ -81,9 +79,9 @@ function Ride({ride, wagons}) {
     setCurrentWagon(cart);
   }
 
-  const wagonTabs = myRide.carts.map(cart => {
-    return <div className="cart-tabs" onClick={() => handleCart(cart)}>
-      <p> Вагон номер {cart.number}</p>
+  const wagonTabs = myRide.carts.map((cart, index) => {
+    return <div className={`cart-tabs ${currentWagon.number === cart.number ? `cart-selected` : null }`} key={index} onClick={() => handleCart(cart)}>
+      <p> Вагон {cart.number}</p>
       <p> {cart.carType} </p>
     </div>
   })
@@ -98,8 +96,9 @@ function Ride({ride, wagons}) {
       ...state,
 			msg: `Місце номер ${area.name} коштує ${area.price} ${area.available? "доступне" : "недоступне"}`
     });
-	};
-
+  };
+  
+ /*
   const moveOnArea = (area, evt) => {
 		const coords = { x: evt.nativeEvent.layerX, y: evt.nativeEvent.layerY };
 		setState({
@@ -137,25 +136,13 @@ function Ride({ride, wagons}) {
 			moveMsg: `You moved on the image at coords ${JSON.stringify(coords)} !`
 		});
 	};
+*/
 
   return (
     <div className="Main">
       <div className="tabs-wrapper"> 
         {wagonTabs} 
       </div>
-      <div> 
-        {currentWagon && <span> Вагон номер + {currentWagon.number} </span>}
-      </div>
-      <div> 
-      {
-        state.hoveredArea &&
-        <span className="tooltip"
-            style={{ ...getTipPosition(state.hoveredArea)}}>
-          { state.hoveredArea && state.hoveredArea.name}
-        </span>
-      }
-      <p>{state.msg}</p>
-      <p>{cartMap.areas[1] && cartMap.areas[1].preFillColor}</p>      </div>
       <div className="scheme-wrapper">
       <div className="scheme-container">
       {cartMap && <ImageMapper src={carScheme} map={cartMap}
@@ -170,9 +157,11 @@ function Ride({ride, wagons}) {
       </div>
       <div className="order-list-container">
         {orderList}
-        <span>Загальна вартість: {slotOrders.reduce((value, slot)=> value+slot.price, 0)} грн.</span>
-        <div>
-          <button onClick={handleBooking}>Забронювати</button>
+        <div className="total-cost">
+          <span>Загальна вартість: {slotOrders.reduce((value, slot)=> value+slot.price, 0)} грн.</span>
+        </div>
+        <div className="handle-button">
+          <button className="button" onClick={handleBooking}>Забронювати</button>
         </div>
       </div>
 

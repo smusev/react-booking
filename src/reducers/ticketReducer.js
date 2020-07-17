@@ -18,5 +18,4 @@ function bookTicketsReducer(state = { loading: true, tickets: [] }, action) {
         }
     }
 
-
 export { bookTicketsReducer }
