@@ -7,7 +7,7 @@ import {
     RIDE_DETAILS_FAIL,
   } from "./actionTypes";
 import axios from 'axios';
-let apiUrl = process.env.REACT_APP_API_URL
+let apiUrl = process.env.REACT_APP_API_URL;
 
 const listRides = (props) => async (dispatch) => {
   try {

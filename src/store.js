@@ -3,7 +3,9 @@ import thunk from 'redux-thunk';
 import { rideListReducer, rideDetailsReducer } from './reducers/rideReducer';
 import { bookTicketsReducer } from './reducers/ticketReducer';
 
-const initialState = {};
+const initialState = {
+    rideDetails: { wagons: [] }
+};
 
 const reducer = combineReducers({
     rideList: rideListReducer,

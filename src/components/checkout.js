@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import InputMask from 'react-input-mask';
-import QR from '../media/Privat24_QR.jpg'; 
+import QR from '../media/Privat24_QR.jpg';
+import { placeOrder } from '../actions/ticketActions';
 
 function Checkout() {
   const {tickets} = useSelector(state => state.bookedTickets);
   const {ride} = useSelector(state => state.rideDetails);
-  const [ payMethod, setMethod] = useState("Card");
-
-console.log(ride);
+  const [ payMethod, setMethod] = useState('Card');
+  const [ phone, setPhone] = useState('');
+  const dispatch = useDispatch();
 
   const ticketList = tickets.map((item, index) => {
     return( 
@@ -21,7 +22,7 @@ console.log(ride);
     switch (payMethod) {
       case 'Privat24':
         return <div>
-          <img src={QR} alt="qr-code"/>
+          <img className="qr-image" src={QR} alt="qr-code"/>
         </div>;
       case 'GooglePay':
         return <div className="select-input">
@@ -58,6 +59,11 @@ console.log(ride);
   const onChangeValue = (event) => {
       setMethod(event.target.value);
   }
+
+  const handleOrder = () => {
+    if (phone !== '' ) 
+     dispatch(placeOrder({rideId: ride._id, slots:tickets}));
+  }
   
   return (
     <div className="checkout">
@@ -87,7 +93,11 @@ console.log(ride);
         </div>
       </div>
       {payment()}
-      <button className="button">Підтвердити</button>
+      <div className="phone-input">
+          <label>Номер телефону(обов'язково)</label>
+          <InputMask className="input-form center" mask="+38 (999) 999-99-99" maskChar=" "  placeholder='+38 (xxx) xxx-xx-xx' type="card" onChange={(e)=>setPhone(e.target.value)}/>
+          </div>
+      <button className="button" onClick={handleOrder}>Підтвердити</button>
     </div>
   );
 }

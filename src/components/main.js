@@ -4,29 +4,29 @@ import { cities } from './data/';
 import DayPicker  from 'react-day-picker';
 import MomentLocaleUtils from 'react-day-picker/moment';
 import 'moment/locale/uk';
-import { useHistory } from "react-router-dom";
 import 'react-day-picker/lib/style.css';
 
 import Ride from './ride.js'
 import RidesList from './ridesList.js'
 import Checkout from './checkout.js'
+import Success from './success.js'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { listRides, rideDetails } from '../actions/rideActions';
 
 function Main() {
-    const [rideRequest, setRideRequest] = useState(
+
+const [rideRequest, setRideRequest] = useState(
     {
     departCity: null,
     arrivalCity: null,
     selectedDay: null,
-  	}
+    }
   );
-  const dispatch = useDispatch();
-  const [ message, setMessage] = useState('');
-  const [route, hashChange] = useState(window.location.hash.substr(1));
+const dispatch = useDispatch();
+const [ message, setMessage] = useState('');
   
-const {tickets} = useSelector(state => state.bookedTickets)
+const {tickets, success} = useSelector(state => state.bookedTickets)
 const ridesList = useSelector(state => state.rideList);
 const {rides} = ridesList;
 const {ride, wagons} = useSelector(state => state.rideDetails);
@@ -39,16 +39,13 @@ const handleDepartCity  = (city) => {
 }
 
 const handleArrivalCity  = (city) => {
-	city ? setRideRequest({...rideRequest, arrivalCity: city.value})
-    	 : setRideRequest({...rideRequest, arrivalCity: null})
+  city ? setRideRequest({...rideRequest, arrivalCity: city.value})
+        : setRideRequest({...rideRequest, arrivalCity: null})
 }
 
 const handleDayClick = (day, { selected }) =>  {
-  let date = day.toLocaleDateString();
   setRideRequest({...rideRequest, selectedDay: selected ? undefined : day });
 }
-
-let history = useHistory();
 
 const handleRideSearch = () => {
     (!rideRequest.departCity ) ? setMessage('Введіть місто відправленя') :
@@ -65,7 +62,7 @@ const handleRideDetails = (id) => {
 }
 
   return (
-  	<Fragment>
+  <Fragment>
     <div className="main">
       <div className="select-wrapper">
         <div className="select-input">
@@ -86,7 +83,7 @@ const handleRideDetails = (id) => {
             isClearable
           />
         </div>
-  	 	</div>
+      </div>
 
       <div className="calendar-wrapper">
 				<DayPicker 
@@ -103,16 +100,17 @@ const handleRideDetails = (id) => {
       
         <p className='error-message'>{message}</p>
         <button 
-        	className="button"
-        	onClick={handleRideSearch}
+          className="button"
+          onClick={handleRideSearch}
         >
         Ты кнопка блять
         </button>
 
       <RidesList rides={rides} details={handleRideDetails} />
 
-      {(wagons.length) ? <Ride ride={ride} wagons={wagons} /> : null}
+      {(Array.isArray(wagons) && wagons.length) ? <Ride ride={ride} wagons={wagons} /> : null}
       {(tickets.length) && (ride.date) ? <Checkout/> : null}
+      {(success) ? <Success/> : null }
     </div>
     </Fragment>
   );
