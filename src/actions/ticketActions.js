@@ -31,7 +31,6 @@ const placeOrder = (props) => async (dispatch) => {
 }
   
 const clearOrder = () => async (dispatch) => {
-  console.log('dispatched order clear')
   dispatch({ type: TICKET_ORDER_CLEAR });
 }
 

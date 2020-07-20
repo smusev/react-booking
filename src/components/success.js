@@ -6,7 +6,6 @@ function RidesList({rides, details}) {
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    console.log('click-zrozumilo')
     dispatch(clearOrder());
   }
 

@@ -64,6 +64,7 @@ const handleRideDetails = (id) => {
   return (
   <Fragment>
     <div className="main">
+      <div className="primary-input">
       <div className="select-wrapper">
         <div className="select-input">
           <Select 
@@ -105,7 +106,7 @@ const handleRideDetails = (id) => {
         >
         Ты кнопка блять
         </button>
-
+      </div>
       <RidesList rides={rides} details={handleRideDetails} />
 
       {(Array.isArray(wagons) && wagons.length) ? <Ride ride={ride} wagons={wagons} /> : null}

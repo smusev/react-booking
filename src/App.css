@@ -49,6 +49,10 @@ html, body{
     max-width: 640px;
 }
 
+.primary-input{
+	margin-bottom: 2rem;
+}
+
 .select-wrapper {
     display: flex;
     flex-wrap: wrap;
