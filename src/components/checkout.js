@@ -33,16 +33,16 @@ function Checkout() {
         <div className="input-form-wrapper">
           <div className="input-wrapper">
           <label>Номер картки</label>
-          <InputMask className="input-form" mask="9999 9999 9999 9999" maskChar=" "  placeholder='xxxx xxxx xxxx xxxx' type="card"/>
+          <InputMask className="input-form" mask="9999 9999 9999 9999" maskChar=" "  placeholder='xxxx xxxx xxxx xxxx' type="tel"/>
           </div>
           <div className="input-wrapper-double">
           <div className="input-wrapper ">
             <label>Строк дії</label>
-            <InputMask className="input-form half-size" mask="99 / 99" maskChar=" "  placeholder='MM / YY' type="card"/>
+            <InputMask className="input-form half-size" mask="99 / 99" maskChar=" "  placeholder='MM / YY' type="tel"/>
           </div>
           <div className="input-wrapper">
           <label>CVV2</label>
-          <InputMask className="input-form half-size" mask="999" maskChar=""  placeholder='***' type="card"/>
+          <InputMask className="input-form half-size" mask="999" maskChar=""  placeholder='***' type="tel"/>
           </div>
           </div>
           <div className="input-wrapper">
@@ -95,7 +95,7 @@ function Checkout() {
       {payment()}
       <div className="phone-input">
           <label>Номер телефону(обов'язково)</label>
-          <InputMask className="input-form center" mask="+38 (999) 999-99-99" maskChar=" "  placeholder='+38 (xxx) xxx-xx-xx' type="card" onChange={(e)=>setPhone(e.target.value)}/>
+          <InputMask className="input-form center" mask="+38 (999) 999-99-99" maskChar=" "  placeholder='+38 (xxx) xxx-xx-xx' type="tel" onChange={(e)=>setPhone(e.target.value)}/>
           </div>
       <button className="button" onClick={handleOrder}>Підтвердити</button>
     </div>

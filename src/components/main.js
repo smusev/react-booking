@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useRef } from 'react';
 import Select from 'react-select'
 import { cities } from './data/';
 import DayPicker  from 'react-day-picker';
@@ -25,7 +25,9 @@ const [rideRequest, setRideRequest] = useState(
   );
 const dispatch = useDispatch();
 const [ message, setMessage] = useState('');
-  
+const scrollToRef = (ref) => window.scrollTo(0, ref.current.offsetTop)   
+const myRef = useRef(null)
+
 const {tickets, success} = useSelector(state => state.bookedTickets)
 const ridesList = useSelector(state => state.rideList);
 const {rides} = ridesList;
@@ -52,13 +54,24 @@ const handleRideSearch = () => {
     (!rideRequest.arrivalCity ) ? setMessage('Введіть місто прибуття') :
     (!rideRequest.selectedDay ) ? setMessage('Введіть дату відправленя') : 
     dispatch(listRides({depart:rideRequest.departCity,arrival:rideRequest.arrivalCity,date:rideRequest.selectedDay.toISOString()}))
-    .then(document.getElementById("rides-list").scrollIntoView())
+    .then(setTimeout( () => {
+      window.scrollTo( {
+        top: 10000,
+        behavior: "smooth"
+      })}, 1000
+      ))
     .then(setMessage(''));
 }
 
 const handleRideDetails = (id) => {
   const rideChoosen = rides.find(ride => ride._id === id);
   dispatch(rideDetails(rideChoosen))
+  .then(    setTimeout( () => {
+    window.scrollTo( {
+      top: 10000,
+      behavior: "smooth"
+    })}, 1000
+    ))
 }
 
   return (
@@ -104,11 +117,10 @@ const handleRideDetails = (id) => {
           className="button"
           onClick={handleRideSearch}
         >
-        Ты кнопка блять
+        Пошук рейсів
         </button>
       </div>
-      <RidesList rides={rides} details={handleRideDetails} />
-
+      <RidesList  rides={rides} details={handleRideDetails} />
       {(Array.isArray(wagons) && wagons.length) ? <Ride ride={ride} wagons={wagons} /> : null}
       {(tickets.length) && (ride.date) ? <Checkout/> : null}
       {(success) ? <Success/> : null }

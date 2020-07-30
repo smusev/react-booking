@@ -277,6 +277,10 @@ html, body{
         background: #fff;
     }
 
+.error-message{
+    color: #f00;
+}
+
 .ride-summary{
     display: flex;
     flex-wrap: nowrap;

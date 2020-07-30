@@ -35,13 +35,14 @@ function Ride({ride, wagons}) {
     return () => {};
   }, [currentWagon, myRide]);
 
-/*  useEffect(() => {
-    return () => {};
-  }, [cartMap]);
-*/
-
   const handleBooking = () => {
     dispatch(bookTickets(slotOrders));
+    setTimeout( () => {
+    window.scrollTo( {
+      top: 10000,
+      behavior: "smooth"
+    })}, 1000
+    )
   }
 
   const orderList = slotOrders.map((slot, index) => {

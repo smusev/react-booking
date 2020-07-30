@@ -27,6 +27,8 @@ switch (action.type) {
 function rideDetailsReducer(state = { loading: true, ride: {}, wagons: [] }, action) {
 
     switch (action.type) {
+        case RIDE_LIST_REQUEST:
+            return { loading: true, ride: {}, wagons: [] };
         case RIDE_DETAILS_REQUEST:
             return { loading: true, ride: {}, wagons: [] };
         case TICKET_ORDER_SUCCESS:

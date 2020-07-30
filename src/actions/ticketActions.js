@@ -26,6 +26,7 @@ const placeOrder = (props) => async (dispatch) => {
     await axios.post(apiUrl + "/api/orders", props);
     dispatch({ type: TICKET_ORDER_SUCCESS });
   } catch (error) {
+    console.log(error.message)
     dispatch({ type: TICKET_ORDER_FAIL, payload: error.message });
   }
 }
